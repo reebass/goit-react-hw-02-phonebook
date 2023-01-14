@@ -11,19 +11,25 @@ Event.PropTypes = {
 
 let schema = yup.object().shape({
   name: yup.string().required(),
-  number: yup.string().phone().required(),
+  number: yup.string().phone('UA', true, "Please enter a Ukrainian phone number.").required('Phone number is required'),
 });
+
+
 
 const initualValues = {
   name: '',
   number: '',
 };
 
-export const ContactForm = ({ onSubmit }) => {
-  const handleSubmit = (values, { resetForm }) => {
+
+
+export const ContactForm = ({ onSubmit}) => {
+  const handleSubmit = (values, { resetForm},) => {
     onSubmit(values);
     resetForm();
   };
+
+  
 
   return (
     <Formik
@@ -35,6 +41,7 @@ export const ContactForm = ({ onSubmit }) => {
         <Label>
           Name
           <Input
+
             type="text"
             name="name"
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
