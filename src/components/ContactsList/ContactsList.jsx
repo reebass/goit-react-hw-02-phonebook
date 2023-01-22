@@ -13,17 +13,17 @@ Event.PropTypes = {
   onDeleteContacts: PropTypes.func.isRequired,
 };
 
-export const ContactList = ({ arrContacts, onDeleteContacts }) => {
+export const ContactList = ({ arrContacts, onDeleteContacts}) => {
   return (
     <List>
       {arrContacts.map(({ id, name, number }) => (
         <Item key={id}>
-          <ContactItem
-            onDeleteContacts={onDeleteContacts}
-            id={id}
-            name={name}
-            number={number}
-          />
+            <ContactItem
+              onDeleteContacts={onDeleteContacts}
+              id={id}
+              name={name}
+              number={number}
+            />
         </Item>
       ))}
     </List>

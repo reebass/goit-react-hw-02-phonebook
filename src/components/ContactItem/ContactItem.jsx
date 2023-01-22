@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import { Button } from './ContactItem.styled';
+import { IoMdClose } from 'react-icons/io';
+import { Button, ContactWrap, Name, Number } from './ContactItem.styled';
 
 Event.PropTypes = {
   name: PropTypes.string.isRequired,
@@ -8,12 +9,16 @@ Event.PropTypes = {
   onDeleteContacts: PropTypes.func.isRequired,
 };
 
-export const ContactItem = ({ name, number, id, onDeleteContacts }) => {
+
+export const ContactItem = ({ name, number, id, onDeleteContacts}) => {
   return (
     <>
-      <span>{name}: {number}</span>
+      <ContactWrap>
+      <Name>{name}</Name> 
+      <Number>{number}</Number>
+      </ContactWrap>
       <Button type="button" onClick={() => onDeleteContacts(id)}>
-        Delete
+        <IoMdClose size={25}/>
       </Button>
     </>
   );

@@ -3,18 +3,37 @@ import { nanoid } from 'nanoid';
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactsList/ContactsList';
 import { Filter } from './Filter/Filter';
-import { Container } from './App.styled';
+import { Container, Subtitle, Title} from './App.styled';
+import { ButtonWithIcon } from './ButtonWithIcon/ButtonWithIcon';
+import { Modal } from './Modal/Modal';
+import { HiPlusCircle } from 'react-icons/hi';
+import { Message } from './Message/Message';
 
 export class App extends Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    contacts: [],
     filter: '',
+    showModal: false,
   };
+
+  componentDidMount() {
+    const contactsParse = JSON.parse(localStorage.getItem('contacts'));
+    if (contactsParse) {
+      this.setState({ contacts: contactsParse });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { contacts } = this.state;
+    if (contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(contacts));
+    }
+
+    // if(contacts.length > prevState.contacts.length && prevState.contacts.length === 0) {
+    //   this.togleModal()
+    //   console.log(contacts)
+    // }
+  }
 
   addContacts = ({ name, number }) => {
     const newContacts = {
@@ -23,20 +42,11 @@ export class App extends Component {
       number,
     };
 
-    if (!this.checkExistContact(name)) {
-      this.setState(prevState => ({
-        contacts: [newContacts, ...prevState.contacts],
-      }));
-    } else {
-      alert(`${name} is already in contacts`);
-    }
-  };
+    this.setState(prevState => ({
+      contacts: [newContacts, ...prevState.contacts],
+    }));
 
-  checkExistContact = value => {
-    const { contacts } = this.state;
-    return contacts.some(
-      contact => value.toLowerCase() === contact.name.toLowerCase()
-    );
+    this.togleModal();
   };
 
   changeFilter = event => {
@@ -47,9 +57,11 @@ export class App extends Component {
     const { contacts, filter } = this.state;
     const normalizedFilter = filter.toLowerCase();
 
-    return contacts.filter(({ name }) =>
-      name.toLowerCase().includes(normalizedFilter)
-    );
+    return contacts
+      .filter(({ name }) => name.toLowerCase().includes(normalizedFilter))
+      .sort((firstName, secondName) =>
+        firstName.name.localeCompare(secondName.name)
+      );
   };
 
   deliteContact = contactId => {
@@ -58,32 +70,43 @@ export class App extends Component {
     }));
   };
 
+  togleModal = () => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+    }));
+  };
+
+
+
   render() {
-    const { filter } = this.state;
+    const { filter, contacts, showModal } = this.state;
     const visibleContacts = this.getVisibleContacts();
 
     return (
-      // <div
-      //   style={{
-      //     height: '100vh',
-      //     display: 'flex',
-      //     justifyContent: 'center',
-      //     alignItems: 'center',
-      //     fontSize: 40,
-      //     color: '#010101',
-      //   }}
-      // >
       <Container>
-        <h1 style={{ margin: '0' }}>Phonebook</h1>
-        <ContactForm onSubmit={this.addContacts} />
-        <h2 style={{ margin: '0' }}>Contacts</h2>
-        <Filter value={filter} onChange={this.changeFilter} />
-        <ContactList
-          arrContacts={visibleContacts}
-          onDeleteContacts={this.deliteContact}
-        />
+            <Title>Phonebook</Title>
+            {contacts.length === 0 && (
+            <Message text="You don't have contacts yet"/>
+            )}
+            <ButtonWithIcon onClick={this.togleModal} aria-label="add phone">
+              <HiPlusCircle size={20} />
+              ADD PHONE
+            </ButtonWithIcon>
+            {showModal && (
+              <Modal onClose={this.togleModal}>
+                <ContactForm onSubmit={this.addContacts} contacts={contacts} />
+              </Modal>
+            )}
+            {contacts.length !== 0 && (
+            <>
+            <Subtitle>Contacts</Subtitle>
+            <Filter value={filter} onChange={this.changeFilter} />
+            <ContactList
+              arrContacts={visibleContacts}
+              onDeleteContacts={this.deliteContact}
+            />
+            </>)}
       </Container>
-      // </div>
     );
   }
 }
