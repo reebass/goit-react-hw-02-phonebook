@@ -6,19 +6,18 @@ Event.PropTypes = {
   name: PropTypes.string.isRequired,
   number: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
-  onDeleteContacts: PropTypes.func.isRequired,
+  onDeleteContacts: PropTypes.func,
 };
 
-
-export const ContactItem = ({ name, number, id, onDeleteContacts}) => {
+export const ContactItem = ({ name, number, id, onDeleteContacts }) => {
   return (
     <>
       <ContactWrap>
-      <Name>{name}</Name> 
-      <Number>{number}</Number>
+        <Name>{name}</Name>
+        <Number>{number}</Number>
       </ContactWrap>
       <Button type="button" onClick={() => onDeleteContacts(id)}>
-        <IoMdClose size={25}/>
+        <IoMdClose size={25} />
       </Button>
     </>
   );

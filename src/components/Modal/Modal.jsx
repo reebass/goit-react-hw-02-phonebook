@@ -1,41 +1,49 @@
-import React, {Component} from "react";
-import { ModalBackDrop, ModalContent, CloseBtn } from "./Modal.styled";
+import React, { Component } from 'react';
+import { ModalBackDrop, ModalContent, CloseBtn } from './Modal.styled';
 import { IoMdClose } from 'react-icons/io';
-
+import PropTypes from 'prop-types';
 
 export class Modal extends Component {
+  static propTypes = {
+    onClose: PropTypes.func,
+    children: PropTypes.node,
+  };
 
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleKeyDown);
+  }
 
-    componentDidMount() {
-        window.addEventListener('keydown', this.handleKeyDown)
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+  }
+
+  handleKeyDown = evt => {
+    const { onClose } = this.props;
+
+    if (evt.code === 'Escape') {
+      onClose();
     }
+  };
 
-    componentWillUnmount() {
-        window.removeEventListener('keydown', this.handleKeyDown)
-    }
+  handleBackDropClick = evt => {
+    const { onClose } = this.props;
 
-    handleKeyDown = evt => {
-        if(evt.code === "Escape") {
-            this.props.onClose()
-        }
+    if (evt.target === evt.currentTarget) {
+      onClose();
     }
+  };
 
-    handleBackDropClick = evt => {
-        if(evt.target === evt.currentTarget) {
-            this.props.onClose()
-        }
-    }
-
-    render() {
-        return (
-            <ModalBackDrop onClick={this.handleBackDropClick}>
-                <ModalContent>
-                    <CloseBtn type="button" onClick={() =>this.props.onClose()}>
-                        <IoMdClose size={25}/>
-                    </CloseBtn>
-                    {this.props.children}
-                </ModalContent>
-            </ModalBackDrop>
-        )
-    }
+  render() {
+    const { onClose, children } = this.props;
+    return (
+      <ModalBackDrop onClick={this.handleBackDropClick}>
+        <ModalContent>
+          <CloseBtn type="button" onClick={() => onClose()}>
+            <IoMdClose size={25} />
+          </CloseBtn>
+          {children}
+        </ModalContent>
+      </ModalBackDrop>
+    );
+  }
 }

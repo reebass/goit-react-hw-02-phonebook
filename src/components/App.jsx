@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactsList/ContactsList';
 import { Filter } from './Filter/Filter';
-import { Container, Subtitle, Title} from './App.styled';
+import { Container, Subtitle, Title } from './App.styled';
 import { ButtonWithIcon } from './ButtonWithIcon/ButtonWithIcon';
 import { Modal } from './Modal/Modal';
 import { HiPlusCircle } from 'react-icons/hi';
@@ -23,7 +23,7 @@ export class App extends Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(_, prevState) {
     const { contacts } = this.state;
     if (contacts !== prevState.contacts) {
       localStorage.setItem('contacts', JSON.stringify(contacts));
@@ -76,36 +76,35 @@ export class App extends Component {
     }));
   };
 
-
-
   render() {
     const { filter, contacts, showModal } = this.state;
     const visibleContacts = this.getVisibleContacts();
 
     return (
       <Container>
-            <Title>Phonebook</Title>
-            {contacts.length === 0 && (
-            <Message text="You don't have contacts yet"/>
-            )}
-            <ButtonWithIcon onClick={this.togleModal} aria-label="add phone">
-              <HiPlusCircle size={20} />
-              ADD PHONE
-            </ButtonWithIcon>
-            {showModal && (
-              <Modal onClose={this.togleModal}>
-                <ContactForm onSubmit={this.addContacts} contacts={contacts} />
-              </Modal>
-            )}
-            {contacts.length !== 0 && (
-            <>
+        <Title>Phonebook</Title>
+        {contacts.length === 0 && (
+          <Message text="You don't have contacts yet" />
+        )}
+        <ButtonWithIcon onClick={this.togleModal} aria-label="add phone">
+          <HiPlusCircle size={20} />
+          ADD PHONE
+        </ButtonWithIcon>
+        {showModal && (
+          <Modal onClose={this.togleModal}>
+            <ContactForm onSubmit={this.addContacts} contacts={contacts} />
+          </Modal>
+        )}
+        {contacts.length !== 0 && (
+          <>
             <Subtitle>Contacts</Subtitle>
             <Filter value={filter} onChange={this.changeFilter} />
             <ContactList
               arrContacts={visibleContacts}
               onDeleteContacts={this.deliteContact}
             />
-            </>)}
+          </>
+        )}
       </Container>
     );
   }
