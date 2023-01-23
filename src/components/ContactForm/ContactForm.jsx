@@ -12,6 +12,7 @@ import {
   InputNumber,
 } from './ContactForm.styled';
 
+
 Event.PropTypes = {
   onSubmit: PropTypes.func.isRequired,
   contacts: PropTypes.arrayOf(
